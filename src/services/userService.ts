@@ -1,7 +1,7 @@
 import { session } from '../config/connector';
 import { v4 as uuidv4 } from 'uuid';
 
-export class UserService {
+class UserService {
 	getAllUsers = async () => {
 		const result = await session.run('MATCH (u:User) RETURN u');
 		const users = result.records.map((record) => record.get('u').properties);
@@ -19,13 +19,13 @@ export class UserService {
 		return newUser;
 	};
 	updateUser = async (id: string, name: string, email: string) => {
-		const result = await session.run('MATCH (u:User) WHERE id(u) = $id SET u.name = $name, u.email = $email RETURN u', {
+		const result = await session.run('MATCH (u:User) WHERE u.id = $id SET u.name = $name, u.email = $email RETURN u', {
 			id,
 			name,
 			email,
 		});
+		// console.log(result)
 		const updatedUser = result.records[0].get('u').properties;
-
 		return updatedUser;
 	}
 	deleteUser = async (id: string): Promise<boolean> => {
@@ -34,3 +34,7 @@ export class UserService {
 		return isUserDeleted;
 	}
 }
+
+const userService = new UserService(); 
+
+export default userService;

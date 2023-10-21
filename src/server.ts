@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import usersRoutes from './routes/usersRoutes';
+import usersRoutes from './routes/userRoutes';
 import cors from 'cors';
 import swaggerUi from 'swagger-ui-express';
 import swaggerDocument from '../swagger-output.json';
@@ -16,6 +16,8 @@ app.get('/', (req: Request, res: Response) => {
 app.use('/users', usersRoutes);
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-app.listen(3000, () => {
+const server = app.listen(3000, () => {
 	console.log('Server started on port 3000');
 });
+
+export { app, server };

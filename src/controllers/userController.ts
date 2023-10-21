@@ -1,7 +1,5 @@
-import { UserService } from '../services/userService';
+import userService from '../services/userService';
 import { Request, Response } from 'express';
-
-const userService = new UserService();
 
 class UserController {
 	getAllUsers = async (req: Request, res: Response): Promise<Response> => {
@@ -35,10 +33,10 @@ class UserController {
 			const { id, name, email } = req.body;
 			const userExists = await userService.updateUser(id, name, email);
 			if (!userExists) {
-				return res.status(404).json({ message: 'User not found' });
+				return res.status(404).json('User not found');
 			}
 			await userService.updateUser(id, name, email);
-			return res.status(200).json({message: 'User updated!'});
+			return res.status(200).json('User updated!');
 		} catch (err: any) {
 			return res.status(400).json(err.message);
 		}
@@ -48,9 +46,9 @@ class UserController {
 			const { id } = req.body;
 			const userDeleted = await userService.deleteUser(id);
 			if (userDeleted) {
-				return res.status(200).json({ message: 'User deleted!' });
+				return res.status(200).json('User deleted!');
 			}
-			return res.status(404).json({ message: 'User not found' });
+			return res.status(404).json('User not found');
 		} catch (err: any) {
 			return res.status(400).json(err.message);
 		}
