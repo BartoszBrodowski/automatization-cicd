@@ -10,7 +10,7 @@ const doc = {
 };
 
 const outputFile = './swagger-output.json';
-const endpointsFiles = ['./server.ts'];
+const endpointsFiles = ['./src/server.ts'];
 
 swaggerAutogen()(outputFile, endpointsFiles, doc).then(() => {
 	import('./src/server'); // Use import for ES6 modules
