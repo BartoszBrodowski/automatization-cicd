@@ -1,4 +1,5 @@
 import { session } from '../config/connector';
+import { v4 as uuidv4 } from 'uuid';
 
 export class UserService {
 	getAllUsers = async () => {
@@ -7,7 +8,9 @@ export class UserService {
 		return users;
 	};
 	createUser = async (name: string, email: string) => {
-		const result = await session.run('CREATE (u:User {name: $name, email: $email}) RETURN u', {
+		const id = uuidv4();
+		const result = await session.run('CREATE (u:User {id: $id, name: $name, email: $email}) RETURN u', {
+			id,
 			name,
 			email,
 		});
@@ -15,4 +18,19 @@ export class UserService {
 
 		return newUser;
 	};
+	updateUser = async (id: string, name: string, email: string) => {
+		const result = await session.run('MATCH (u:User) WHERE id(u) = $id SET u.name = $name, u.email = $email RETURN u', {
+			id,
+			name,
+			email,
+		});
+		const updatedUser = result.records[0].get('u').properties;
+
+		return updatedUser;
+	}
+	deleteUser = async (id: string): Promise<boolean> => {
+		const user = await session.run('MATCH (u:User) WHERE u.id = $id DELETE u', { id });
+		const isUserDeleted = user.summary.updateStatistics.containsUpdates();
+		return isUserDeleted;
+	}
 }

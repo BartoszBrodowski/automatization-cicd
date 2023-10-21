@@ -1,17 +1,12 @@
-import { Router, Request, Response } from 'express';
+import { Router} from 'express';
 import { userController } from '../controllers/usersController';
+import { validateUserInput } from '../middlewares/userInputValidation';
 
 const router = Router();
 
-router.post('/', async (req: Request, res: Response) => {
-	const { name, email } = req.body;
-	const result = await userController.createUser(name, email);
-	res.status(200).json(result);
-});
-
-router.get('/', async (req: Request, res: Response) => {
-	const result = await userController.getAllUsers();
-	res.status(200).json(result);
-});
+router.get('/getUsers', validateUserInput, userController.getAllUsers);
+router.post('/createUser', validateUserInput, userController.createUser);
+router.delete('/deleteUser', validateUserInput, userController.deleteUser);
+router.put('/updateUser', validateUserInput, userController.updateUser);
 
 export default router;

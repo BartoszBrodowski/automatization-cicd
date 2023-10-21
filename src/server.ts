@@ -1,8 +1,8 @@
 import express, { Request, Response } from 'express';
-import usersRoutes from './src/routes/usersRoutes';
+import usersRoutes from './routes/usersRoutes';
 import cors from 'cors';
 import swaggerUi from 'swagger-ui-express';
-import swaggerDocument from './swagger-output.json';
+import swaggerDocument from '../swagger-output.json';
 
 const app = express();
 
