@@ -1,8 +1,7 @@
 import request from "supertest";
 import { app, server } from "../server";
 import userService from "../services/userService";
-import { validateUserInput } from "../middlewares/userInputValidation";
-import { userController } from "../controllers/userController";
+import userController from "../controllers/userController";
 
 describe("User Routes", () => {
   const mockUserData = {

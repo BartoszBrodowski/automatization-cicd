@@ -1,5 +1,6 @@
 import express, { Request, Response } from "express";
 import usersRoutes from "./routes/userRoutes";
+import guitarRoutes from "./routes/guitarRoutes";
 import cors from "cors";
 import swaggerUi from "swagger-ui-express";
 import swaggerDocument from "../swagger-output.json";
@@ -16,6 +17,7 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 app.use("/users", usersRoutes);
+app.use("/guitars", guitarRoutes);
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 const server = app.listen(PORT, () => {
