@@ -30,13 +30,17 @@ describe("User Routes", () => {
     expect(response.status).toBe(200);
     expect(response.body).toEqual("User created!");
   });
-  it("should get user with given id", async () => {
+  it("should get user with a given id", async () => {
     userService.getUser = jest.fn().mockResolvedValue(mockUserData);
 
-    const response = await request(app).get(`/users/getUser`);
+    const userId = "1";
 
-    expect(response.status).toBe(200);
+    const response = await request(app)
+      .get(`/users/getUser`)
+      .send({ id: userId });
+
     expect(response.body).toEqual(mockUserData);
+    expect(response.status).toBe(200);
   });
   it("should update a user", async () => {
     const updatedUserData = {
@@ -70,7 +74,7 @@ describe("User Routes", () => {
   it("should return a 404 response if user is not found", async () => {
     userService.getUser = jest.fn().mockResolvedValue(null);
 
-    const response = await request(app).get(`/users/getUser`);
+    const response = await request(app).get("/users/getUser");
 
     expect(response.status).toBe(404);
     expect(response.body).toEqual("User not found");
@@ -123,7 +127,7 @@ describe("User Routes", () => {
       throw new Error("User not found");
     });
 
-    const response = await request(app).get(`/users/getUser`);
+    const response = await request(app).get("/users/getUser");
 
     expect(response.status).toBe(400);
     expect(response.body).toEqual("User not found");
@@ -170,6 +174,20 @@ describe("User Routes", () => {
 
     expect(response.status).toBe(400);
     expect(response.body).toEqual("Invalid input for updating user.");
+  });
+  it("should return a 404 response when the user is not found", async () => {
+    userService.updateUser = jest.fn().mockResolvedValue(null);
+
+    const userData = {
+      id: "nonExistentUserId",
+      name: "Updated Name",
+      email: "updatedemail@example.com",
+    };
+
+    const response = await request(app).put("/users/updateUser").send(userData);
+
+    expect(response.body).toEqual("User not found");
+    expect(response.status).toBe(404);
   });
   it("should return a 404 response when the user is not found", async () => {
     (userService.updateUser as jest.Mock).mockResolvedValue(false);
