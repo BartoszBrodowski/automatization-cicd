@@ -23,6 +23,25 @@ class GuitarService {
     });
     return guitars;
   };
+  updateGuitar = async (id: UUID, name: string, price: number) => {
+    const result = await session.run(
+      "MATCH (g:Guitar) WHERE g.id = $id SET g.name = $name, g.price = $price RETURN g",
+      {
+        id,
+        name,
+        price,
+      }
+    );
+    const guitar = result.records[0].get("g").properties;
+    guitar.price = guitar.price.low;
+    return guitar;
+  };
+  deleteGuitar = async (id: UUID) => {
+    await session.run("MATCH (g:Guitar) WHERE g.id = $id DELETE g", {
+      id,
+    });
+    return "Guitar deleted";
+  };
 }
 
 const guitarService = new GuitarService();
