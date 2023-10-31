@@ -15,7 +15,9 @@ export const validateUserInput = (
 
   if (req.path === "/createUser") {
     if (!name || !email || !isValidEmail(email)) {
-      return res.status(400).json("Please provide a valid 'name' and 'email'.");
+      return res
+        .status(400)
+        .json({ message: "Please provide a valid 'name' and 'email'." });
     }
   }
 
@@ -27,12 +29,14 @@ export const validateUserInput = (
       name === "" ||
       !isValidEmail(email)
     ) {
-      return res.status(400).json("Invalid input for updating user.");
+      return res
+        .status(400)
+        .json({ message: "Invalid input for updating user." });
     }
   }
 
   if (req.path === "/deleteUser" && !id) {
-    return res.status(400).json("Please provide 'id' field.");
+    return res.status(400).json({ message: "Please provide 'id' field." });
   }
 
   next();

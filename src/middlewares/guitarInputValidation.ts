@@ -9,7 +9,7 @@ export const validateGuitarInput = (
   const { id, manufacturer, title, price } = req.body;
 
   if (req.path === "/getGuitar" && !id) {
-    return res.status(400).json("No id provided");
+    return res.status(400).json({ message: "No id provided" });
   }
 
   if (req.path === "/createGuitar") {
@@ -23,7 +23,10 @@ export const validateGuitarInput = (
     ) {
       return res
         .status(400)
-        .json("Please provide a valid 'manufacturer', 'title' and 'price'.");
+        .json({
+          message:
+            "Please provide a valid 'manufacturer', 'title' and 'price'.",
+        });
     }
   }
 
@@ -35,12 +38,14 @@ export const validateGuitarInput = (
       title === "" ||
       price === ""
     ) {
-      return res.status(400).json("Invalid input for updating guitar.");
+      return res
+        .status(400)
+        .json({ message: "Invalid input for updating guitar." });
     }
   }
 
   if (req.path === "/deleteGuitar" && !id) {
-    return res.status(400).json("Please provide 'id' field.");
+    return res.status(400).json({ message: "Please provide 'id' field." });
   }
 
   next();
