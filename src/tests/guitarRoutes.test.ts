@@ -54,22 +54,26 @@ describe("Guitar Routes", () => {
     expect(response.body).toEqual(updatedGuitarData);
   });
   it("should delete an existing guitar", async () => {
-    guitarService.deleteGuitar = jest.fn().mockResolvedValue("Guitar deleted");
+    guitarService.deleteGuitar = jest
+      .fn()
+      .mockResolvedValue({ message: "Guitar deleted" });
 
     const response = await request(app)
       .delete("/guitars/deleteGuitar")
       .send({ id: "1" });
 
     expect(response.status).toBe(200);
-    expect(response.body).toEqual("Guitar deleted");
+    expect(response.body).toEqual({ message: "Guitar deleted" });
   });
 
   // Status 400
 
   it("should return 400 if no id is provided to getGuitar", async () => {
-    const response = await request(app).get("/guitars/getGuitar");
+    const response = await request(app)
+      .get("/guitars/getGuitar")
+      .send({ id: "" });
 
-    expect(response.body).toEqual("No id provided");
+    expect(response.body).toEqual({ message: "No id provided" });
     expect(response.status).toBe(400);
   });
   it("should return 400 if no manufacturer is provided in updateGuitar", async () => {
@@ -77,7 +81,9 @@ describe("Guitar Routes", () => {
       .put("/guitars/updateGuitar")
       .send({ manufacturer: "", title: "Squier Stratocaster", price: 1000 });
 
-    expect(response.body).toEqual("Invalid input for updating guitar.");
+    expect(response.body).toEqual({
+      message: "Invalid input for updating guitar.",
+    });
     expect(response.status).toBe(400);
   });
   it("should return 400 if no price is provided in updateGuitar", async () => {
@@ -87,7 +93,19 @@ describe("Guitar Routes", () => {
       price: "",
     });
 
-    expect(response.body).toEqual("Invalid input for updating guitar.");
+    expect(response.body).toEqual({
+      message: "Invalid input for updating guitar.",
+    });
     expect(response.status).toBe(400);
   });
+  it("should return 400 if no id is provided in deleteGuitar", async () => {
+    const response = await request(app)
+      .delete("/guitars/deleteGuitar")
+      .send({ id: "" });
+
+    expect(response.body).toEqual({ message: "Please provide 'id' field." });
+    expect(response.status).toBe(400);
+  });
+
+  // Status 404
 });

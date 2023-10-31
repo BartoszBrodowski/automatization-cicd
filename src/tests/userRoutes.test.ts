@@ -28,7 +28,7 @@ describe("User Routes", () => {
       .send(newUserData);
 
     expect(response.status).toBe(200);
-    expect(response.body).toEqual("User created!");
+    expect(response.body).toEqual({ message: "User created!" });
   });
   it("should get user with a given id", async () => {
     userService.getUser = jest.fn().mockResolvedValue(mockUserData);
@@ -56,7 +56,7 @@ describe("User Routes", () => {
       .send(updatedUserData);
 
     expect(response.status).toBe(200);
-    expect(response.body).toEqual("User updated!");
+    expect(response.body).toEqual({ message: "User updated!" });
   });
   it("should delete an existing user", async () => {
     userService.deleteUser = jest.fn().mockResolvedValue("User deleted");
@@ -66,7 +66,7 @@ describe("User Routes", () => {
       .send({ id: "1" });
 
     expect(response.status).toBe(200);
-    expect(response.body).toEqual("User deleted!");
+    expect(response.body).toEqual({ message: "User deleted!" });
   });
 
   // Status 404
@@ -77,7 +77,7 @@ describe("User Routes", () => {
     const response = await request(app).get("/users/getUser");
 
     expect(response.status).toBe(404);
-    expect(response.body).toEqual("User not found");
+    expect(response.body).toEqual({ message: "User not found" });
   });
   it("should return a 404 response if user creation fails", async () => {
     userService.createUser = jest.fn().mockResolvedValue(null);
@@ -92,7 +92,7 @@ describe("User Routes", () => {
       .send(userData);
 
     expect(response.status).toBe(404);
-    expect(response.body).toEqual("User could not be created");
+    expect(response.body).toEqual({ message: "User could not be created" });
   });
   it("should return a 404 response if user update fails", async () => {
     userService.updateUser = jest.fn().mockResolvedValue(null);
@@ -106,9 +106,9 @@ describe("User Routes", () => {
     const response = await request(app).put("/users/updateUser").send(userData);
 
     expect(response.status).toBe(404);
-    expect(response.body).toEqual("User not found");
+    expect(response.body).toEqual({ message: "User not found" });
   });
-  it("should return a 404 response if user deletion fails", async () => {
+  it("should return a 500 response if user deletion fails", async () => {
     userService.deleteUser = jest.fn().mockImplementation(() => {
       throw new Error("User deletion failed");
     });
@@ -117,8 +117,8 @@ describe("User Routes", () => {
       .delete("/users/deleteUser")
       .send({ id: "1" });
 
-    expect(response.status).toBe(400);
-    expect(response.body).toEqual("User deletion failed");
+    expect(response.status).toBe(500);
+    expect(response.body).toEqual({ message: "User deletion failed" });
   });
 
   // Status 400
@@ -129,8 +129,8 @@ describe("User Routes", () => {
 
     const response = await request(app).get("/users/getUser");
 
-    expect(response.status).toBe(400);
-    expect(response.body).toEqual("User not found");
+    expect(response.status).toBe(500);
+    expect(response.body).toEqual({ message: "User not found" });
   });
 
   it("should return a 400 response if user name is not proper", async () => {
@@ -145,7 +145,9 @@ describe("User Routes", () => {
     const response = await request(app).put("/users/updateUser").send(userData);
 
     expect(response.status).toBe(400);
-    expect(response.body).toEqual("Invalid input for updating user.");
+    expect(response.body).toEqual({
+      message: "Invalid input for updating user.",
+    });
   });
   it("should return a 400 response if user email is not proper", async () => {
     userService.updateUser = jest.fn().mockResolvedValue(null);
@@ -159,7 +161,9 @@ describe("User Routes", () => {
     const response = await request(app).put("/users/updateUser").send(userData);
 
     expect(response.status).toBe(400);
-    expect(response.body).toEqual("Invalid input for updating user.");
+    expect(response.body).toEqual({
+      message: "Invalid input for updating user.",
+    });
   });
   it("should return a 400 response if user email and name is not proper", async () => {
     userService.updateUser = jest.fn().mockResolvedValue(null);
@@ -173,7 +177,9 @@ describe("User Routes", () => {
     const response = await request(app).put("/users/updateUser").send(userData);
 
     expect(response.status).toBe(400);
-    expect(response.body).toEqual("Invalid input for updating user.");
+    expect(response.body).toEqual({
+      message: "Invalid input for updating user.",
+    });
   });
   it("should return a 404 response when the user is not found", async () => {
     userService.updateUser = jest.fn().mockResolvedValue(null);
@@ -186,7 +192,7 @@ describe("User Routes", () => {
 
     const response = await request(app).put("/users/updateUser").send(userData);
 
-    expect(response.body).toEqual("User not found");
+    expect(response.body).toEqual({ message: "User not found" });
     expect(response.status).toBe(404);
   });
   it("should return a 404 response when the user is not found", async () => {
@@ -208,10 +214,10 @@ describe("User Routes", () => {
     await userController.updateUser(req, res);
 
     expect(res.status).toHaveBeenCalledWith(404);
-    expect(res.json).toHaveBeenCalledWith("User not found");
+    expect(res.json).toHaveBeenCalledWith({ message: "User not found" });
   });
 
-  it("should return a 400 response if user deletion fails", async () => {
+  it("should return a 500 response if user deletion fails", async () => {
     userService.deleteUser = jest.fn().mockImplementation(() => {
       throw new Error("User deletion failed");
     });
@@ -220,7 +226,7 @@ describe("User Routes", () => {
       .delete("/users/deleteUser")
       .send({ id: "1" });
 
-    expect(response.status).toBe(400);
-    expect(response.body).toEqual("User deletion failed");
+    expect(response.status).toBe(500);
+    expect(response.body).toEqual({ message: "User deletion failed" });
   });
 });
