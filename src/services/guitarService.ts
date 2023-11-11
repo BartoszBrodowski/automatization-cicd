@@ -17,17 +17,18 @@ class GuitarService {
   getGuitarPage = async (page: number, size: number) => {
     const skipValue = page * size;
     const result = await session.run(
-      "MATCH (g:Guitar) RETURN g SKIP toInteger($skip) LIMIT toInteger($limit)",
+      "MATCH (g:Guitar) WITH count(g) as totalGuitars MATCH (g:Guitar) RETURN totalGuitars, collect(g)[toInteger($skip)..toInteger($skip)+toInteger($limit)] as guitars",
       {
         skip: skipValue,
         limit: size,
       }
     );
-    const guitars = result.records.map((record) => {
-      const guitar = record.get("g").properties;
+    const totalGuitars = result.records[0].get("totalGuitars").toNumber();
+    const guitars = result.records[0].get("guitars").map((record: any) => {
+      const guitar = record.properties;
       return guitar;
     });
-    return guitars;
+    return { totalGuitars, guitars };
   };
   getGuitars = async () => {
     const result = await session.run("MATCH (g:Guitar) RETURN g");
