@@ -14,6 +14,21 @@ class GuitarService {
     guitar.price = guitar.price.low;
     return guitar;
   };
+  getGuitarPage = async (page: number, size: number) => {
+    const skipValue = page * size;
+    const result = await session.run(
+      "MATCH (g:Guitar) RETURN g SKIP toInteger($skip) LIMIT toInteger($limit)",
+      {
+        skip: skipValue,
+        limit: size,
+      }
+    );
+    const guitars = result.records.map((record) => {
+      const guitar = record.get("g").properties;
+      return guitar;
+    });
+    return guitars;
+  };
   getGuitars = async () => {
     const result = await session.run("MATCH (g:Guitar) RETURN g");
     const guitars = result.records.map((record) => {

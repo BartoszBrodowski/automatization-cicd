@@ -14,6 +14,21 @@ class GuitarController {
       return res.status(500).json({ message: err.message });
     }
   };
+  getGuitarPage = async (req: Request, res: Response) => {
+    try {
+      const params = req.query;
+      const guitars = await guitarService.getGuitarPage(
+        Number(params.page),
+        Number(params.size)
+      );
+      if (!guitars) {
+        return res.status(404).json({ message: "Guitars not found" });
+      }
+      return res.status(200).json(guitars);
+    } catch (err: any) {
+      return res.status(500).json({ message: err.message });
+    }
+  };
   getGuitars = async (req: Request, res: Response) => {
     try {
       const guitars = await guitarService.getGuitars();
